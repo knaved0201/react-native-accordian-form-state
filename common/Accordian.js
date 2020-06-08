@@ -76,7 +76,7 @@ class Accordian extends Component {
           padding: 10,
         }}>
         <Tabs>
-          <Tab heading="Indivial">
+          <Tab heading="Individual">
             <IndivialForm
               formIndex={index}
               tabIndex={0}
