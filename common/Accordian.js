@@ -21,10 +21,12 @@ class Accordian extends Component {
     super(props);
     const {dataArray} = this.props;
     this.state = {
-      dataArray,
+      dataArray: dataArray.map((data, index) => ({...data, index})),
       currentAccordionOpenIndex: 0,
     };
     this.onChangeFormData = this.onChangeFormData.bind(this);
+    this._renderContent = this._renderContent.bind(this);
+    this._renderHeader = this._renderHeader.bind(this);
   }
 
   _renderHeader(item, expanded) {
@@ -49,6 +51,7 @@ class Accordian extends Component {
 
   onChangeFormData({inputName, inputValue, formIndex, tabIndex, formKey}) {
     this.setState((state) => {
+      debugger;
       const {dataArray} = state;
       if (dataArray[formIndex][formKey]) {
         const formData = {
@@ -69,7 +72,8 @@ class Accordian extends Component {
     });
   }
 
-  _renderContent(index, item) {
+  _renderContent(item) {
+    console.log('item', item);
     return (
       <View
         style={{
@@ -78,16 +82,16 @@ class Accordian extends Component {
         <Tabs>
           <Tab heading="Individual">
             <IndivialForm
-              formIndex={index}
+              formIndex={item.index}
               tabIndex={0}
               formKey={'indivialForm'}
               formData={item.indivialForm || {}}
               onChangeFormData={this.onChangeFormData}
             />
           </Tab>
-          <Tab heading="Corporate">
+          <Tab heading="Corporate Form ">
             <CorporateForm
-              formIndex={index}
+              formIndex={item.index}
               tabIndex={1}
               formKey={'corporateForm'}
               formData={item.corporateForm || {}}
@@ -110,7 +114,9 @@ class Accordian extends Component {
               this.setState((state) => {
                 const {dataArray} = state;
                 dataArray.push({title: 'Owner ' + (dataArray.length + 1)});
-                return {dataArray: dataArray.map((d) => ({...d}))};
+                return {
+                  dataArray: dataArray.map((d, index) => ({...d, index})),
+                };
               });
             }}>
             <Text>Click To Add Owner</Text>
@@ -121,17 +127,8 @@ class Accordian extends Component {
           dataArray={dataArray}
           animation={true}
           expanded={true}
-          onAccordionOpen={(item, index) =>
-            this.setState({currentAccordionOpenIndex: index})
-          }
-          onAccordionClose={(item, index) =>
-            this.setState({currentAccordionOpenIndex: index})
-          }
           renderHeader={this._renderHeader}
-          renderContent={this._renderContent.bind(
-            this,
-            currentAccordionOpenIndex,
-          )}
+          renderContent={this._renderContent}
         />
       </>
     );
